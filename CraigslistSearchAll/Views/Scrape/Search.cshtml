@@ -1,0 +1,44 @@
+﻿@model CraigslistSearchAll.ViewModels.SearchViewModel
+
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2>Search</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th></th>
+    </tr>
+@{
+    string state = "";
+    foreach (CraigslistSearchAll.Models.Location loc in Model.Locations) {
+    @:
+        if (state != loc.State)
+        {
+            state = loc.State;
+            <tr>
+                <td>
+                    <strong>
+                        @loc.State
+                    </strong>
+                </td>
+            </tr>
+        }
+            <tr>
+                <td>
+                    <a href="https://@(loc.URL+"/"+@Model.SearchParameters)">@loc.City</a>
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                </td>
+            </tr>
+    }
+}
+
+</table>

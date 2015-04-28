@@ -1,0 +1,115 @@
+﻿@model List<CraigslistSearchAll.Models.Location>
+@{
+    ViewBag.Title = "Locations";
+}
+
+<h2>Locations</h2>
+<section class="body">
+
+    <span id="select-resultSpan"></span>
+    <div class="jump_to_continents">
+        <a href="#US">US</a>
+        <a href="#CA">Canada</a>
+        <a href="#EU">Europe</a>
+        <a href="#ASIA">Asia/Pacific/Middle East</a>
+        <a href="#OCEANIA">Oceania</a>
+        <a href="#LATAM">Latin America</a>
+        <a href="#AF">Africa</a>
+    </div>
+    
+    @using (Html.BeginForm("Locations", "Scrape", FormMethod.Post))
+    {
+        <section class="form-field">
+            @Html.Hidden("Locations")
+            @Html.TextBox("SearchParameters")
+            <form action="" method="post" class="clearfix">
+                <input type="submit"
+                       value="some value"
+                       class="submit btn blue-btn special-submit" />
+
+                <div>
+      @{
+        var currentCountryCode = "";
+        var currentState = "";
+        foreach (CraigslistSearchAll.Models.Location c in Model)
+        {
+
+            if (string.IsNullOrEmpty(currentCountryCode))
+            {
+                <h1><a name="@c.CountryCode"></a>@c.Country.CountryName</h1>
+                currentCountryCode = c.CountryCode;
+            }
+            if (string.IsNullOrEmpty(currentState))
+            {
+                <h4>@c.State</h4>
+                @Html.Raw("<ul class=\"selectable\">")
+                currentState = c.State;
+            }
+            if (currentState != c.State)
+            {
+                @Html.Raw("</ul>")
+            }
+
+            if (currentCountryCode != @c.CountryCode)
+            {
+                <h1><a name="@c.CountryCode"></a>@c.Country.CountryName</h1>
+                currentCountryCode = @c.CountryCode;
+            }
+
+            if (currentState != @c.State)
+            {
+                <h4>@c.State</h4>
+                        @Html.Raw("<ul class=\"selectable\">");
+                                                  currentState = @c.State;
+            }
+            <li class="ui-widget-content" id="@c.Id">@c.City</li>
+        }
+                    }
+                    @Html.Raw("</ul>")
+                </div>
+            </form>
+        </section>
+    }
+
+    
+</section>
+@section scripts{
+    <script type="text/javascript">
+       
+            //$(".selectable").bind("mousedown", function (e) {
+            //    e.metaKey = true;
+            //}).selectable();
+       
+
+        $(function () {
+            $(".selectable").selectable({
+                stop: function () {
+                    var result = $("#select-resultSpan").empty();
+                    //var selection = $("#Locations");
+                    //selection.val("");
+                    //var list = "";
+                    $(".ui-selected").each(function () {
+                        result.append("<li>" + $(this).text() + "</li>");
+                        //if (index!=0) {
+                        //    result.append(",");
+                        //    list += ",";
+                        //}
+                        //result.append($(this).attr('id'));
+                        //list += $(this).attr('id');
+                        
+                    });
+                    //selection.val(list);
+                    //var result = $("#Locations").empty();
+                    //var len = $(".ui-selected").length;
+                    //$(".ui-selected").each(function (index, element) {
+                    //    result.append($(this).text());
+                    //    if (index != len - 1) {
+                    //        result.append(",");
+                    //    }
+                    //});
+                    
+                }
+            });
+        });
+    </script>
+}
